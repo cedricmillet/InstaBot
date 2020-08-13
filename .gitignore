@@ -1,0 +1,5 @@
+dist/
+build/
+instagram_credentials.txt
+node_modules/
+src/config/config.ts

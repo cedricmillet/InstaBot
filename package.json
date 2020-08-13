@@ -1,0 +1,29 @@
+{
+  "name": "instabot",
+  "version": "1.0.0",
+  "description": "A simple nodejs/typescript instagram bot",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -e ts --exec"
+  },
+  "keywords": [
+    "instagram",
+    "bot",
+    "instabot"
+  ],
+  "author": "Cedric MILLET - cedricmillet.fr",
+  "license": "ISC",
+  "dependencies": {
+    "@firebase/database": "^0.6.10",
+    "chalk": "^4.1.0",
+    "mysql": "^2.18.1",
+    "puppeteer": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "ts-node": "^8.10.2",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.9.7"
+  }
+}
