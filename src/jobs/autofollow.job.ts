@@ -39,7 +39,7 @@ import { InstaBot } from '../bot';
     const bot = new InstaBot(BrowserCfg);
     await bot.init();
     await bot.login();
-    await bot.autoFollowTag(`climbing`, 100);
+    await bot.autoFollowTag(`climbing`, 150);
 })();
 
 

@@ -24,6 +24,24 @@ export class InstaBot {
         const browser = await puppeteer.launch(this.browserCfg);
         const page = await browser.newPage();
         await page.setViewport({ width: 0, height: 0 });
+
+        //  Set UserAgent
+
+        page.on('console', consoleObj => console.log("<<WEB CLIENT>> : ", consoleObj._text));
+        await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36');
+        /*
+        await this.page.setCookie({
+            name: 'auth_token',
+            value: this.authToken,
+            domain: '.twitter.com',
+            path: '/',
+            expires: (new Date().getTime() + 86409000),
+            httpOnly: true,
+            secure: true
+        });
+
+        */
+        
         return new Promise((res) => {
             res(page)
         });
