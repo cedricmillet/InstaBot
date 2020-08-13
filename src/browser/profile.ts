@@ -138,7 +138,7 @@ export async function unfollowNotFollowingMeUsers(page, followersList:User[]=[],
                     //  wait to prevent 429 errors
                     i++;
                     if(i%17==0) {
-                        const delaytInMinuts = 4;
+                        const delaytInMinuts = 8;
                         console.log(chalk.underline(`Afin de prevenir des erreurs HTTP 429, interruption de ${delaytInMinuts} min.`));
                         
                         for(let a=1;a<=delaytInMinuts;a++) {
