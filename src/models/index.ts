@@ -7,9 +7,8 @@ export interface PostData {
 
 export interface User {
     username ?: string;
-    publicationCount ?: number;
-    followerCount ?: number;
-    followingCount ?: string;
+    fullname ?: string;
+    profileURI ?: string;
 }
 
 export interface Comment {

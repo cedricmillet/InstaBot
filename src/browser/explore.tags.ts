@@ -86,18 +86,27 @@ export async function followAndLikePost(page, postSelector='not_necessary') : Pr
             like: '⭕',
             comment: '⭕'
         }
-        //  Follow
-        if(btnFollow) {
-            await btnFollow.click();
-            await page.waitForSelector(`button[data-btnfollow]:not([disabled])`);       //  On attend que le bouton follow ne soit plus "disabled" i.e que le follow soit prit en compte
-            actionEmoji.follow = '✅';
-        } else actionEmoji.follow = `⚠️  already following`;
-        //  Like
-        if(btnLike) {
-            await btnLike.click();
-            await page.waitForSelector(`svg[aria-label="Je n’aime plus"]`);
-            actionEmoji.like = '✅';
-        } else actionEmoji.like = `⚠️  already liked`;
+
+        try {
+            //  Follow
+            if(btnFollow) {
+                await btnFollow.click();
+                await page.waitForSelector(`button[data-btnfollow]:not([disabled])`);       //  On attend que le bouton follow ne soit plus "disabled" i.e que le follow soit prit en compte
+                actionEmoji.follow = '✅';
+                
+            } else actionEmoji.follow = `⚠️  already following`;
+            //  Like
+            if(btnLike) {
+                await btnLike.click();
+                await page.waitForSelector(`svg[aria-label="Je n’aime plus"]`);
+                actionEmoji.like = '✅';
+            } else actionEmoji.like = `⚠️  already liked`;
+        } catch (error) {
+            console.log(chalk.red.inverse(`Error when trying to follow/like : `), error)
+        }
+        
+        //  Temporise to prevent 429 http error
+        await page.waitFor(1500);   
 
         await closePostDialog(page, postSelector);
 

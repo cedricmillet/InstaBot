@@ -17,6 +17,7 @@
   "dependencies": {
     "@firebase/database": "^0.6.10",
     "chalk": "^4.1.0",
+    "fs": "0.0.1-security",
     "mysql": "^2.18.1",
     "puppeteer": "^5.2.1"
   },

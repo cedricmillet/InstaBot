@@ -3,8 +3,8 @@ import { config } from './config/config';
 import * as chalk from "chalk";
 import { getAll } from "./models/database"
 import { autoFollowTag } from '../src/browser/explore.tags';
-import { getFollowerList } from '../src/browser/profile'
-import { logWelcomeMessage } from '../src/common/functions';
+import { getFollowerList, getFollowingList, unfollowNotFollowingMeUsers, getNotFollowingUsers } from '../src/browser/profile'
+import { logWelcomeMessage, writeTextInFile, getUserListFromFile } from '../src/common/functions';
 
 class InstaBot {
     browserCfg;
@@ -25,6 +25,7 @@ class InstaBot {
         console.log(chalk.blue.inverse("Starting web client instance..."));
         const browser = await puppeteer.launch(this.browserCfg);
         const page = await browser.newPage();
+        await page.setViewport({ width: 0, height: 0 });
         return new Promise((res) => {
             res(page)
         });
@@ -96,14 +97,27 @@ class InstaBot {
         "mountain",
         "follow4follow"
     ];
-
+    
     
     const bot = new InstaBot(BrowserCfg);
     await bot.init();
     await bot.login();
+    
     //await bot.autoFollowTag(`climbing`, 100);
-    let followers = await getFollowerList(bot.page);
 
+    const followers = await getFollowerList(bot.page);
+    await unfollowNotFollowingMeUsers(bot.page, followers, 100);
+
+    /*
+    const followers = await getFollowerList(bot.page);
+    const following = await getFollowingList(bot.page);
+    const diff = getNotFollowingUsers(followers, following);
+    writeTextInFile('not-following-me.txt', JSON.stringify(diff));
+    writeTextInFile('following.txt', JSON.stringify(following));
+    writeTextInFile('followers.txt', JSON.stringify(followers));
+    console.log(`followers: ${followers.length} - following: ${following.length} - diff = ${following.length-followers.length}`)
+    console.log("utilisateurs qui ne me suivent pas : ", diff.length)
+    */
 })();
 
 

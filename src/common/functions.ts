@@ -1,4 +1,6 @@
 import * as chalk from "chalk";
+import { User } from '../models';
+const fs = require('fs')
 
 /**
  * Generate and return uniqID
@@ -51,4 +53,21 @@ export function logWelcomeMessage() {
     console.log(chalk.magenta("|__|___|  /____  > |__| (____  /___  /\____/|__|   ") );
     console.log(chalk.magenta("        \\/     \\/            \\/    \\/              \t\t\t") + chalk.greenBright("by Cedric MILLET"));
 
+}
+
+
+export function writeTextInFile(fileName:string = 'text.txt', fileContent:string="ABC") {
+    fs.writeFile(fileName, fileContent, function (err) {
+    if (err) return console.log(err);
+        console.log('Ecriture dans le fichier : ', fileName);
+    });
+}
+
+export function getUserListFromFile(fileName:string) : Promise<User[]> {
+    return new Promise((res) => {
+        fs.readFile(fileName, function (err, data) {
+        if (err) throw err;
+            res(JSON.parse(data));
+        });
+    });
 }
