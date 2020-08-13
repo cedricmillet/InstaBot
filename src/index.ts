@@ -3,6 +3,7 @@ import { config } from './config/config';
 import * as chalk from "chalk";
 import { getAll } from "./models/database"
 import { autoFollowTag } from '../src/browser/explore.tags';
+import { getFollowerList } from '../src/browser/profile'
 import { logWelcomeMessage } from '../src/common/functions';
 
 class InstaBot {
@@ -100,8 +101,9 @@ class InstaBot {
     const bot = new InstaBot(BrowserCfg);
     await bot.init();
     await bot.login();
-    await bot.autoFollowTag(`climbing`, 100);
-    
+    //await bot.autoFollowTag(`climbing`, 100);
+    let followers = await getFollowerList(bot.page);
+
 })();
 
 

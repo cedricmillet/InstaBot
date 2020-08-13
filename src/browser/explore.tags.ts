@@ -7,11 +7,8 @@ export async function autoFollowTag(page, tag: string, followCount:number=100) :
 
         //  Go to tag page
         await page.goto(`https://www.instagram.com/explore/tags/${tag}/`);
-        //  Get all sections
-        const sections = await page.$$('article > div');
-        
+
         //  Dans la section "Plus récentes"
-        const section = sections[1];
         await page.evaluate(async () => {
             const a = document.querySelectorAll('article > div');
             a[0].setAttribute('data-sectionid', 'most_featured');       //  meilleures publications

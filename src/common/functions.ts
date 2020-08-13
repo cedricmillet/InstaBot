@@ -31,6 +31,17 @@ export async function scrollToBottomOfPage(page) : Promise<boolean> {
     });
 }
 
+export async function scrollToSelector(page, selector) : Promise<boolean> {
+    return new Promise(async (res) => {
+        await page.evaluate((selector) => {
+            const e = document.querySelector(selector);
+            if(e) e.scrollIntoView();
+            else console.log("scroll to bottom of selector, element introuvable = ", selector)
+        }, selector);
+        res(true);
+    });
+}
+
 
 export function logWelcomeMessage() {
     console.log(chalk.magenta(".__                 __        ___.           __    ") );
