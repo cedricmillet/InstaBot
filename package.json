@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -e ts --exec"
+    "dev": "nodemon -e ts --exec",
+    "unfollow-haters": "nodemon -e ts src/jobs/unfollow-haters.job.ts --exec ",
+    "autofollow": "nodemon -e ts src/jobs/autofollow.job.ts --exec"
   },
   "keywords": [
     "instagram",
