@@ -27,7 +27,15 @@ export class InstaBot {
 
         //  Set UserAgent
 
-        page.on('console', consoleObj => console.log("<<WEB CLIENT>> : ", consoleObj._text));
+        page.on('console', async consoleObj => {
+            const txt = consoleObj._text;
+            //console.log("<<WEB CLIENT>> : ", txt)
+            if(txt.includes(`the server responded with a status of 429`)) {
+                console.log(chalk.redBright(`HTTP 429 DETECTED - BREAK 5 MINUTES`));
+                throw new Error("HTTP 429 Dtected : "+ txt);
+                
+            }
+        });
         await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36');
         /*
         await this.page.setCookie({

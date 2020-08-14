@@ -39,7 +39,12 @@ import { InstaBot } from '../bot';
     const bot = new InstaBot(BrowserCfg);
     await bot.init();
     await bot.login();
-    await bot.autoFollowTag(`climbing`, 150);
+    for(let i=1;i<=3;i++) {
+        await bot.autoFollowTag(`rockclimbing`, 300);
+        await bot.autoFollowTag(`nature`, 300);
+        await bot.autoFollowTag(`climbing`, 300);
+        await bot.autoFollowTag(`bouldering`, 300);
+    }
 })();
 
 

@@ -23,13 +23,16 @@ export async function autoFollowTag(page, tag: string, followCount:number=100) :
                 const uid = getUniqID();
                 await page.evaluate((uid) => {   document.querySelector(`a:not([data-done])`).setAttribute('data-postuid', uid);     }, uid);
                 //  Like & follow post
-                await followAndLikePost(page, `a[data-postuid="${uid}"]`);
+                const newFollow : boolean = await followAndLikePost(page, `a[data-postuid="${uid}"]`);
                 await page.waitFor(400);
                 //  Set post as done
                 await page.evaluate((uid) => {   document.querySelector( `a[data-postuid="${uid}"]`).setAttribute('data-done', 'true');     }, uid);
                 //  Log
-                console.log(`Traitement post n°${i} / ${followCount}`)
-                i++;
+                if(newFollow) {
+                    console.log(chalk.underline.magenta(`New follow n°${i} / ${followCount}`));
+                    
+                    i++;
+                }
             } catch (error) {
                 //  Aucun post trouvé
                 console.log(chalk.bgRed(`Aucun post trouvé, on scroll to bottom.`));
@@ -45,6 +48,7 @@ export async function autoFollowTag(page, tag: string, followCount:number=100) :
    
 }
 
+/** Retourne true si nouvel abonnement souscrit */
 export async function followAndLikePost(page, postSelector='not_necessary') : Promise<boolean> {
     return new Promise(async (resolve) => {
 
@@ -52,6 +56,7 @@ export async function followAndLikePost(page, postSelector='not_necessary') : Pr
         await openPostDialog(page, postSelector);
 
         //  Wait for post Modal
+        await page.waitForSelector('article');
         await page.waitForSelector('header');
 
         await page.waitFor(600);
@@ -60,7 +65,7 @@ export async function followAndLikePost(page, postSelector='not_necessary') : Pr
         await page.evaluate(async (selec) => {
 
             function setFollowButtonData(attribute = 'data-btnfollow', value='true') {
-                const btns : NodeListOf<Element> = document.querySelectorAll(`button`);
+                const btns : NodeListOf<Element> = document.querySelectorAll(`article[role="presentation"] button`);
                 btns.forEach(btn => {
                     if(btn.innerHTML.includes(`abonner`)) btn.setAttribute(`data-btnfollow`, 'true');
                     else if(btn.innerHTML.includes(`abonné`)) btn.setAttribute(`data-btnunfollow`, 'true');
@@ -68,7 +73,7 @@ export async function followAndLikePost(page, postSelector='not_necessary') : Pr
             }
 
             function setLikeButtonData(attribute = 'data-btnlike', value = 'true') {
-                const svg = document.querySelector(`svg[aria-label="J’aime"]`);
+                const svg = document.querySelector(`article[role="presentation"] svg[aria-label="J’aime"]`);
                 if(!svg) return;
                 const btn = svg.closest(`button[type="button"]`);
                 btn.setAttribute(attribute, value);
@@ -86,14 +91,16 @@ export async function followAndLikePost(page, postSelector='not_necessary') : Pr
             like: '⭕',
             comment: '⭕'
         }
-
+        let newFollowApplied = false;
         try {
             //  Follow
-            if(btnFollow) {
+            if (await page.$('button[data-btnfollow="true"]') !== null) {
+                console.log("try to follow.... with a click")
                 await btnFollow.click();
+                await page.waitFor(150);
                 await page.waitForSelector(`button[data-btnfollow]:not([disabled])`);       //  On attend que le bouton follow ne soit plus "disabled" i.e que le follow soit prit en compte
                 actionEmoji.follow = '✅';
-                
+                newFollowApplied = true;
             } else actionEmoji.follow = `⚠️  already following`;
             //  Like
             if(btnLike) {
@@ -106,14 +113,15 @@ export async function followAndLikePost(page, postSelector='not_necessary') : Pr
         }
         
         //  Temporise to prevent 429 http error
-        await page.waitFor(1500);   
+        if(newFollowApplied)
+            await page.waitFor(20000);
 
         await closePostDialog(page, postSelector);
 
         //  Log
-        console.log(`${postSelector} \t\t` + chalk.underline(`FOLLOW:`) + ` ${actionEmoji.follow}\t\t\t\t` + chalk.underline(`LIKE:`) + ` ${actionEmoji.like}`);
+        console.log(`Following \t\t` + chalk.underline(`FOLLOW:`) + ` ${actionEmoji.follow}\t\t\t\t` + chalk.underline(`LIKE:`) + ` ${actionEmoji.like}`);
 
-        resolve(true);
+        resolve(newFollowApplied);
     });
 }
 
